@@ -3,7 +3,8 @@
 
 from .pages.product_page import ProductPage
 
-link = "http://selenium1py.pythonanywhere.com/ru/catalogue/the-shellcoders-handbook_209/?promo=newYear"
+#link = "http://selenium1py.pythonanywhere.com/ru/catalogue/the-shellcoders-handbook_209/?promo=newYear" #урок 4.3.2
+link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=newYear2019" #урок 4.3.3
 
 
 def test_guest_can_add_product_to_basket(browser):
@@ -12,9 +13,11 @@ def test_guest_can_add_product_to_basket(browser):
     # открываем страницу
     page.open()
     # выполняем метод страницы — переходим на нужную страницу
-    page.guest_can_add_product_to_basket()
-    #time .sleep(5)
-    # получаем текущий url из браузера
-    #login_page = ProductPage(browser, browser.current_url)
-    # выполняем метод на новой странице
-    #login_page.should_be_login_page()
+    #####page.guest_can_add_product_to_basket()
+    param_from_page = page.should_be_add_product_to_basket()
+    add_button =param_from_page[0]
+    product_name_text= param_from_page[1]
+    product_price_text = param_from_page[2]
+    page.add_product_to_basket(add_button)
+    page.check_product_in_basket(product_name_text,product_price_text)
+
