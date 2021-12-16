@@ -1,18 +1,25 @@
 ## импортируем собственное исключение
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
-
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import math
+from .locators import BasePageLocators
 class BasePage():
     def __init__(self, browser, url, timeout=10):
         self.browser = browser
         self.url = url
         self.browser.implicitly_wait(timeout)
-
+    def go_to_login_page(self):
+        link = self.browser.find_element(*BasePageLocators.LOGIN_LINK_INVALID)
+        link.click()
+    def should_be_login_link(self):
+        assert self.is_element_present(*BasePageLocators.LOGIN_LINK), "Login link is not presented (кнопка не найдена)"
     def open(self):
         # ваша реализация
         self.browser.get(self.url)
-
+    # Проверка "есть ли элемент"
     def is_element_present(self, how, what):
         try:
             element_finded = self.browser.find_element(how, what)
@@ -20,7 +27,22 @@ class BasePage():
             return False
         return element_finded
         #return True
+    # Проверка, что элемент не появляется на странице в течение заданного времени
+    def is_not_element_present(self, how, what, timeout=4):
+        try:
+            WebDriverWait(self.browser, timeout).until(EC.presence_of_element_located((how, what)))
+        except TimeoutException:
+            return True
+        return False
 
+    # Проверка, что элемент исчезает через в течение заданного времени
+    def is_disappeared(self, how, what, timeout=4):
+        try:
+            WebDriverWait(self.browser, timeout, 1, TimeoutException). \
+                until_not(EC.presence_of_element_located((how, what)))
+        except TimeoutException:
+            return False
+        return True
 
         # метод для получения проверочного кода:  27.259960235490315
     def solve_quiz_and_get_code(self):

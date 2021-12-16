@@ -44,9 +44,17 @@ class ProductPage(BasePage):
         #time.sleep(10)
         check_product_name = self.is_element_present(*ProductPageLocators.PRODUCT_NAME_CHECK)
         assert check_product_name, "Не нашли сообщение о добавлении  в корзину"
+        ##assert self.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE),  "Success message is presented, but should not be"
         check_product_name = check_product_name.text
         assert check_product_name == product_name_text, "Название товара не совпало"
         check_product_price = self.is_element_present(*ProductPageLocators.PRODUCT_PRICE_CHECK)
         assert check_product_price , "Не нашли сообения с ценой"
         check_product_price = check_product_price.text
         assert check_product_price == product_price_text, "Цена товара не совпала"
+
+    def should_not_be_success_message(self):
+        assert self.is_not_element_present(*ProductPageLocators.PRODUCT_NAME_CHECK), "Сообщение об успехе есть, а не должно быть"
+    def guest_cant_see_success_message(self):
+        assert self.is_not_element_present(*ProductPageLocators.PRODUCT_NAME_CHECK), "Сообщение об успехе есть, а не должно быть 2"
+    def message_disappeared_after_adding_product_to_basket(self):
+        assert self.is_disappeared(*ProductPageLocators.PRODUCT_NAME_CHECK), "Сообщение об успехе есть, а не должно быть 2"
