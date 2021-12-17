@@ -1,9 +1,7 @@
 #test_product_page.py
-## запуск командой pytest -v -s --tb=line --language=en test_product_page.py
-import time
-import pytest
+## запуск командой pytest -v -s --tb=line test_product_page.py
 from .pages.product_page import ProductPage
-
+from .pages.basket_page import BasketPage
 #link = "http://selenium1py.pythonanywhere.com/ru/catalogue/the-shellcoders-handbook_209/?promo=newYear" #урок 4.3.2
 #link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=newYear2019" #урок 4.3.3
 #link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer1" #урок 4.3.6
@@ -69,14 +67,28 @@ def a_test_message_disappeared_after_adding_product_to_basket(browser):
     page.message_disappeared_after_adding_product_to_basket()
 
 
-def test_guest_should_see_login_link_on_product_page(browser):
+def A_test_guest_should_see_login_link_on_product_page(browser):
     link = "http://selenium1py.pythonanywhere.com/en-gb/catalogue/the-city-and-the-stars_95/"
     page = ProductPage(browser, link)
     page.open()
     page.should_be_login_link()
 
-def test_guest_can_go_to_login_page_from_product_page(browser):
+def A_test_guest_can_go_to_login_page_from_product_page(browser):
     link = "http://selenium1py.pythonanywhere.com/en-gb/catalogue/the-city-and-the-stars_95/"
     page = ProductPage(browser, link)
     page.open()
     page.should_be_login_link()
+
+
+def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
+    link = "http://selenium1py.pythonanywhere.com/catalogue/the-shellcoders-handbook_209/"
+# Гость открывает страницу товара
+    page = BasketPage(browser, link)
+    page.open()
+    #page.add_to_basket() # функция добавления в корзину для имитации провала теста по не пустой корзине
+# Переходит в корзину по кнопке в шапке
+    page.open_basket()
+# Ожидаем, что в корзине нет товаров
+    page.check_full_basket()
+# Ожидаем, что есть текст о том что корзина пуста
+    page.check_empty_basket()
